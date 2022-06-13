@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import difflib
+import os
 
 
 class SpeedTypeTest:
@@ -45,7 +46,7 @@ class SpeedTypeTest:
         self.user_input["yscrollcommand"] = self.scroll.set
 
         # Button
-        self.restart_btn = tk.Button(text="Check", height=6, width=10, command=self.check_mistakes)
+        self.restart_btn = tk.Button(text="Try Again", height=6, width=10, command=self.retry)
         self.restart_btn.grid(row=2, column=2, sticky="N", pady=7)
 
     def start_time(self, event):
@@ -87,8 +88,12 @@ class SpeedTypeTest:
         gross_wpm = num_words / self.minute  # Number of words divided by time
         net_wpm = int(gross_wpm - (mistakes / self.minute))  # gross wpm minus (number of mistakes/time)
         return tk.messagebox.showinfo(title="TIME'S UP!",
-                                      message=f"Your WPM score is: {net_wpm}.\n"
-                                              f"You made {self.mistakes} mistakes.")
+                                            message=f"Your WPM score is: {net_wpm}.\n"
+                                                    f"You made {self.mistakes} mistakes.")
+
+    def retry(self):
+        self.main.destroy()
+        os.startfile("main.py")
 
 
 root = tk.Tk()

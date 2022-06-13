@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import difflib
 from PIL import Image, ImageTk
 
 class SpeedTypeTest:
@@ -23,6 +24,7 @@ class SpeedTypeTest:
                             " up wholly to dreams of a Platonic kind of artillery.")
         self.minute = 1
         self.type_test = self.get_text.get()
+
         # ## GUI ## #
         # Labels
         self.top_label = tk.Label(text="TEST YOUR SKILLS", font=("Century Gothic", 24))
@@ -51,17 +53,25 @@ class SpeedTypeTest:
     def check_mistakes(self):
         # set a counter for uncorrected errors
         self.mistakes = 0
+
         # count all characters the user has typed
         self.result = self.user_input.get("1.0", tk.END).rstrip()
         self.all_chars = len(self.result)
+
         # Makes test and users typings into list of words
         self.user = self.result.split(" ")
-        self.test = self.type_test[:self.all_chars].split(" ")
-        for user, test in zip(self.user, self.test):
-            if user != test:
-                for char in range(len(user)):
-                    if user[char] != test[char]:
+        self.test = self.type_test.split(" ")
+
+        for user_word, test_word in zip(self.user, self.test[:self.all_chars]):
+            if len(user_word) != len(test_word):
+                seq = difflib.SequenceMatcher(None, user_word, test_word)
+                d = round(seq.ratio())
+                self.mistakes += d
+            else:
+                for char in range(len(test_word)):
+                    if user_word[char] != test_word[char]:
                         self.mistakes += 1
+
         return self.calculate_wpm(self.mistakes, self.all_chars), print(f"mistakes: {self.mistakes}")
 
     def calculate_wpm(self, mistakes, num_chars):
